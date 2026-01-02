@@ -10,6 +10,11 @@ typedef enum DaysOfWeek {
     MONDAY,     // 3
 } days_of_week_t;
 
+enum {
+    PROTOCOL_TCP,
+    PROTOCOL_UDP,
+};
+
 int32_t main() {
 
     days_of_week_t day = FRIDAY;

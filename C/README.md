@@ -23,3 +23,10 @@ memmove(&arr[idx + 1], &arr[idx], sizeof(int) * 3);   // move 3 int
 
 - bool : must include `<stdbool.h>` header.
 - socket header: `<sys/socket.h>` and `<netinet/in.h>`.
+
+Key Header Files for Socket Programming:
+    <unistd.h> - close(), read(), write()
+    <sys/socket.h> - socket(), bind(), listen(), accept()
+    <netinet/in.h> - sockaddr_in, htons(), ntohs()
+    <arpa/inet.h> - inet_pton(), inet_ntop()
+    <errno.h> - errno variable for error codes

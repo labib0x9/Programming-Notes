@@ -18,13 +18,16 @@ int main() {
 	printf("%d\n", fd);
 
 	struct sockaddr_in addr;
-	bzero(&addr, sizeof(addr));	// fill with zero
+	socklen_t addr_len = sizeof(addr);
+	// bzero(&addr, sizeof(addr));	// fill with zero
+
+	memset(&addr, 0, sizeof(addr));
 
 	addr.sin_family = AF_INET;	// ipv4
 	addr.sin_port = htons(8080);	// port -> endianess handles
 	addr.sin_addr.s_addr = INADDR_ANY;	// accept any local interface
 
-	if (bind(fd, (struct sockaddr*)&addr, sizeof(addr)) < 0 ) { close(fd); perror("bind"); return 0; };	// bind to port 127.0.0.1:8080
+	if (bind(fd, (struct sockaddr*)&addr, addr_len) < 0 ) { close(fd); perror("bind"); return 0; };	// bind to port 127.0.0.1:8080
 	if (listen(fd, 10) < 0) { close(fd); perror("listen"); return 0; }; // 10 backlog queue, why use backlog queue ? maximum number of pending connections waiting to be accepted
 
 	int recieved;
