@@ -147,7 +147,6 @@ int main() {
     // sprintf();
     // snprintf();
 
-
     // Conversion
     int n = atoi("10"); // atoi("1232bb");
     float f = atof("10.5");
