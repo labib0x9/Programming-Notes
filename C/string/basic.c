@@ -146,6 +146,9 @@ int main() {
     /* */
     // sprintf();
     // snprintf();
+    char buf[64];
+    char *path = "/index.html";
+    int n = snprintf(buf, sizeof(buf), "GET %s HTTP/1.1\r\n", path);
 
     // Conversion
     int n = atoi("10"); // atoi("1232bb");
