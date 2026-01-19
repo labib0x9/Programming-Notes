@@ -13,7 +13,7 @@ int main() {
 
     // string literal -> stores at read-only section -> non modifiable
     char *ss = "vauvau";
-    // ss[0] = 'V'; // bus error
+    // ss[0] = 'V'; // bus error -> SIGBUS/SIGSEGV
     printf("%s\n", ss); // no change
     printf("%lu\n", sizeof(ss));  // 8 = sizeof(pointer)
     printf("%lu\n", sizeof(*ss)); // 1 = s[0] -> one char
@@ -52,7 +52,9 @@ int main() {
     char s3[3], s6[6];
 
     // strcpy(s6, s3);
+
     // strncpy(s3, s6, 3);
+
 
     // strcat(s3, s6);
     // strncat(s3, s6, 3);
@@ -60,13 +62,43 @@ int main() {
     // strcmp(s3, s6);
     // strncmp(s3, s6, 3);
 
-    // strpbrk()
+    // compare case insensitive
+    if(strcasecmp("Tcp", "tcp") == 0) printf("equal\n");    // 0 = equal
+
+    // find first char in sss, that matches pattern. 
+    // strpbrk(sss, pattern)
+    char* sss = "aggg:ggg";
+    char* found = strpbrk(sss, ":");
+    printf("%s\n", found + 1);
 
     // strspn()
+    char* sss = "aggg:ggg";
+    size_t len = strspn(sss, "ag");
+    printf("%zu\n", len);
+
     // strcspn()
+    char* sss2 = "aggg:ggg";
+    size_t idx = strcspn(sss2, ":");
+    printf("%zu\n", idx);
+
+    // strchr(ss, c)
+    // Find first occurances of c in ss
+    char* ss = "aggg:ggg";
+    char* sep = strchr(ss, ':');
+    printf("%d\n", sep - ss);
+    printf("%s\n", sep + 1);
+    
+    // strstr()
+    char* sss = "aggg:ggg";
+    char* found = strstr(sss, ":");
+    printf("%s\n", found + 1);
 
     // strdup()
+    char* dup = strdup("hello");
+    printf("%s\n", dup);
+    free(dup);
 
+    // // In memory section..
     // memset();
     // memmem();
     // memcpy();
@@ -114,6 +146,20 @@ int main() {
     /* */
     // sprintf();
     // snprintf();
+    char buf[64];
+    char *path = "/index.html";
+    int n = snprintf(buf, sizeof(buf), "GET %s HTTP/1.1\r\n", path);
+
+    // Conversion
+    int n = atoi("10"); // atoi("1232bb");
+    float f = atof("10.5");
+    long long nn = atoll("111000000000");
+    long n2 = strtol("123", NULL, 10);
+    char* end;
+    long nn2 = strtol("12434n", &end, 10);
+    if (end == 'n') {
+        printf("No more characters after number\n");
+    }
 
     return 0;
 }

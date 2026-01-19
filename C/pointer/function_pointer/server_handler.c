@@ -5,6 +5,7 @@
 #include<stdbool.h>
 
 typedef int (*handler_func)(int client_id, char* body);
+// typedef void (*route_handler_fn)(client_t*, request_ctx_t*);
 
 typedef struct {
 	char* method;
