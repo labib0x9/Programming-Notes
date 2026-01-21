@@ -1,0 +1,9 @@
+# GOLANG - INTERMEDIATE 1
+---
+- 01 : Pointer
+- 02 : Interface
+- 03 : Goroutine and channel
+- 04 : Networking
+- 05 : Reflection
+- 06 : Slice and String
+- 07 : Memory Management

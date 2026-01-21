@@ -22,8 +22,8 @@ typedef struct Client {
 
 void handle_conn(client_t client) {
 
-    // set timeout on client socket fd
-    struct timeval tv = {.tv_sec = 5, .tv_usec = 0};
+    // set recv() timeout on client socket fd
+    struct timeval tv = {.tv_sec = 5, .tv_usec = 0};    // 5seconds
     if( setsockopt(client.fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
         perror("setsockopt SO_RCVTIMEO");
         close(client.fd);
