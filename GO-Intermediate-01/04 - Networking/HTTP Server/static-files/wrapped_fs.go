@@ -36,8 +36,27 @@ func main() {
 	// use /static as file loading
 	// without wrapFS http://127.0.0.1:8080/static/.env -> 200 OK
 	// with wrapFS http://127.0.0.1:8080/static/.env -> 500 Internal Server Error
+
+	// root is a http.Dir which has Open() method, so root implements http.FileSystem
 	root := http.Dir("./static")
-	fs := http.FileServer(wrapFS{root})
+
+	// wrapFs stores http.FileSystem, wfs stores the behavior of http.Dir (root).
+	wfs := wrapFS{fh: root}
+
+	// http.FileServer takes a http.FileSystem
+	// But why wfs ? WrapFs
+	// because WrapFS has a method named Open(), which implements http.FileSystem.
+	fs := http.FileServer(wfs)
+
+
+	/*
+		Function Interception / Structural Typing
+
+		FileServer calls filesystem.Open()	-> filesystem (interface) is now WrapFS
+		filesystem calls wfs.Open()		-> WrapFS
+		wfs.Open() calls root.Open()	-> http.Dir
+	*/
+
 
 	fsHandler := http.StripPrefix("/static/", fs)
 
