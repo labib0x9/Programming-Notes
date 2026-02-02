@@ -38,6 +38,8 @@ func main() {
 		return
 	}
 
+	// process is running, do whatever you want....
+
 	if err := cmd.Wait(); err != nil {
 		fmt.Println("Wait Error: " + err.Error())
 		return
