@@ -7,3 +7,5 @@
 - 05 : Reflection
 - 06 : Slice and String
 - 07 : Memory Management
+- 08 : Error and log handling / management
+- 09 : Flag parsing
