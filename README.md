@@ -7,6 +7,9 @@ Programming Language Notes.
 - **DSA** : Data Structure and Algorithm implemented using c, cpp and go. Also reimplementation of cpp stl from scratch.
 - **go-basic** : Go programming Language, The beginner phase.
 - **go-intermediate** : Go Programming Language, The intermediate phase.
+- **go-backend** :
+- **go-packages** :
+- **go-system** :
 
 # Resources
 - Stack frame and gdb : https://www.youtube.com/watch?v=7dMTCdFM2ss
