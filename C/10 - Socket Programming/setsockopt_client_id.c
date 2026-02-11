@@ -36,13 +36,13 @@ void handle_conn(client_t client) {
         // struct sockaddr_in temp_client;
         // memcpy(&temp_client, &client.addr, sizeof(temp_client));
         // char client_ip[INET_ADDRSTRLEN];
-        // inet_ntop(AF_INET, &temp_client, client_ip, INET_ADDRSTRLEN);
-        // printf("[CLIENT] %s:%d\n", client_ip, htons(temp_client.sin_port));
+        // inet_ntop(AF_INET, &temp_client->sin_addr, client_ip, INET_ADDRSTRLEN);
+        // printf("[CLIENT] %s:%d\n", client_ip, htons(temp_client->sin_port));
 
         // // Method - 02
         struct sockaddr_in *temp_client = (struct sockaddr_in*) &client.addr;
         char client_ip[INET_ADDRSTRLEN];
-        inet_ntop(AF_INET, temp_client, client_ip, INET_ADDRSTRLEN);
+        inet_ntop(AF_INET, &temp_client->sin_addr, client_ip, INET_ADDRSTRLEN);
         printf("[CLIENT] %s:%d\n", client_ip, htons(temp_client->sin_port));
     }
 
