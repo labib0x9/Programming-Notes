@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mq_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mq_user
+      POSTGRES_PASSWORD: mq_pass
+      POSTGRES_DB: mq_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - mq_pgdata:/var/lib/postgresql/data
+      # - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mq_user -d mq_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  mq_pgdata:
