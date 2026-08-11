@@ -1,0 +1,28 @@
+<html>
+<body>
+    Mem: <span id="mem"></span><br />
+</body>
+<script type="text/javascript">
+    const sse = new EventSource("http://127.0.0.1:8080/status/mem")
+    const mem = document.getElementById("mem")
+
+    sse.addEventListener("mem", (event) => {
+        mem.textContent = event.data
+    })
+
+    sse.addEventListener("done", (event) => {
+        sse.close()
+    })
+
+    sse.addEventListener("json", (event) => {
+        console.log("JSON");
+        const payload = JSON.parse(event.data)
+        mem.textContent = `Total: ${payload.total}, Used: ${payload.used}, ${payload.perc.toFixed(2)}%`
+    })
+
+    sse.addEventListener("error", (event) => {
+        console.error("SSE error:", event)
+        sse.close()
+    })
+</script>
+</html>
