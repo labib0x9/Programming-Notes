@@ -1,0 +1,89 @@
+<!-- <!DOCTYPE html>
+<html>
+<body>
+<input id="msg" value="hello">
+<button onclick="ws.send(document.getElementById('msg').value)">Send</button>
+<pre id="log"></pre>
+
+<script>
+  const log = m => document.getElementById('log').textContent += m + "\n";
+  const ws = new WebSocket("ws://localhost:8080/echo");
+
+  ws.onopen    = () => log("connected");
+  ws.onmessage = e => log("recv: " + e.data);
+  ws.onclose   = () => log("closed");
+  ws.onerror   = e => log("error: " + e);
+</script>
+</body>
+</html> -->
+
+
+<!-- <html>
+<body>
+    Mem: <span id="mem"></span><br />
+</body>
+<script type="text/javascript">
+    const sse = new EventSource("http://127.0.0.1:8080/status/mem")
+    const mem = document.getElementById("mem")
+
+    sse.addEventListener("mem", (event) => {
+        mem.textContent = event.data
+    })
+
+    sse.addEventListener("done", (event) => {
+        sse.close()
+    })
+
+    sse.addEventListener("json", (event) => {
+        console.log("JSON");
+        const payload = JSON.parse(event.data)
+        mem.textContent = `Total: ${payload.total}, Used: ${payload.used}, ${payload.perc.toFixed(2)}%`
+    })
+
+    sse.addEventListener("error", (event) => {
+        console.error("SSE error:", event)
+        sse.close()
+    })
+</script>
+</html>-->
+
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<input id="msg" value="hello">
+<button onclick="sendText()">Send Text</button>
+<button onclick="sendBinary()">Send Binary</button>
+<pre id="log"></pre>
+
+<script>
+  const log = m => document.getElementById('log').textContent += m + "\n";
+  const ws = new WebSocket("ws://localhost:8080/echo");
+
+  ws.onopen    = () => log("connected");
+//   ws.onmessage = e => log("recv: " + e.data);
+
+    // Binary and text frame..
+    ws.onmessage = async (e) => {
+    if (e.data instanceof Blob) {
+        const text = await e.data.text(); // Blob -> string, async
+        log("recv (binary as text): " + text);
+    } else {
+        log("recv: " + e.data); // was already a text frame
+    }
+    };
+  ws.onclose   = () => log("closed");
+
+  function sendText() {
+    ws.send(document.getElementById('msg').value); // string -> text frame -> msgType 1
+  }
+
+  function sendBinary() {
+    const bytes = new TextEncoder().encode(document.getElementById('msg').value);
+    ws.send(bytes); // Uint8Array -> binary frame -> msgType 2
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+<input id="value" value="0">
+<button onclick="sendText()">Send Text</button>
+<pre id="log"></pre>
+<script>
+  const log = m => document.getElementById('log').textContent += m + "\n";
+  const ws = new WebSocket("ws://localhost:8080/echo");
+
+  ws.onopen  = () => log("connected");
+  ws.onclose = () => log("closed");
+
+  ws.onmessage = (e) => {
+    const obj = JSON.parse(e.data);
+    log("recv: " + obj.req_id);
+  };
+
+  function sendText() {
+    const payload = { req_id: Number(document.getElementById('value').value) };
+    ws.send(JSON.stringify(payload));
+  }
+</script>
+</body>
+
+</html>
