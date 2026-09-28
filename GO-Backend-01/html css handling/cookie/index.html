@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cookie Sharing Test</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --border: #2a2e38;
+    --text: #e4e6eb;
+    --muted: #8a8f9c;
+    --accent: #5b8cff;
+    --ok: #4ade80;
+    --err: #f87171;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 0 20px;
+    line-height: 1.5;
+  }
+  h1 { font-size: 1.15rem; font-weight: 600; margin-bottom: 4px; }
+  p.sub { color: var(--muted); font-size: 0.85rem; margin-top: 0; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+  input {
+    width: 100%;
+    background: #0b0d12;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.85rem;
+  }
+  .row { display: flex; gap: 10px; margin-top: 12px; }
+  button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 9px 14px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  button:hover { opacity: 0.9; }
+  button.secondary { background: #2a2e38; }
+  #log {
+    background: #0b0d12;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+    min-height: 120px;
+    max-height: 340px;
+    overflow-y: auto;
+  }
+  .line-ok { color: var(--ok); }
+  .line-err { color: var(--err); }
+  .line-muted { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<h1>Cookie Sharing Test</h1>
+<p class="sub">Checks whether a cookie your backend sets actually gets stored and re-sent by the browser.</p>
+
+<div class="panel">
+  <label for="url">Backend base URL</label>
+  <input id="url" value="http://localhost:8080" />
+  <div class="row">
+    <button onclick="setCookie()">1. Set Cookie</button>
+    <button onclick="checkCookie()">2. Check Cookie</button>
+    <button class="secondary" onclick="showDocumentCookie()">Show document.cookie</button>
+    <button class="secondary" onclick="clearLog()">Clear</button>
+  </div>
+</div>
+
+<div id="log"></div>
+
+<script>
+  const logEl = document.getElementById('log');
+
+  function log(msg, cls) {
+    const div = document.createElement('div');
+    if (cls) div.className = cls;
+    div.textContent = msg;
+    logEl.appendChild(div);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function clearLog() { logEl.innerHTML = ''; }
+
+  function baseUrl() {
+    return document.getElementById('url').value.replace(/\/$/, '');
+  }
+
+  // Expects a backend endpoint like GET /set-cookie that responds with
+  // a Set-Cookie header, e.g. Set-Cookie: testcookie=hello; SameSite=None; Secure
+  async function setCookie() {
+    log('→ GET ' + baseUrl() + '/set-cookie', 'line-muted');
+    try {
+      const res = await fetch(baseUrl() + '/set-cookie', {
+        credentials: 'include'
+      });
+      log('← status ' + res.status, res.ok ? 'line-ok' : 'line-err');
+      const text = await res.text();
+      if (text) log(text, 'line-muted');
+    } catch (e) {
+      log('✗ request failed: ' + e.message, 'line-err');
+      log('  (likely CORS, mixed content, or backend not reachable)', 'line-muted');
+    }
+  }
+
+  // Expects a backend endpoint like GET /check-cookie that reads the
+  // incoming cookie and echoes back what it saw.
+  async function checkCookie() {
+    log('→ GET ' + baseUrl() + '/check-cookie', 'line-muted');
+    try {
+      const res = await fetch(baseUrl() + '/check-cookie', {
+        credentials: 'include'
+      });
+      log('← status ' + res.status, res.ok ? 'line-ok' : 'line-err');
+      const text = await res.text();
+      log(text, 'line-muted');
+    } catch (e) {
+      log('✗ request failed: ' + e.message, 'line-err');
+    }
+  }
+
+  function showDocumentCookie() {
+    log('document.cookie = "' + document.cookie + '"', 'line-muted');
+    log('(HttpOnly cookies never show up here — that\'s expected, not a bug)', 'line-muted');
+  }
+</script>
+
+</body>
+</html>
