@@ -1,0 +1,43 @@
+<!-- START FRONTEND = python3 -m http.server 5000 -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Test</title>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+  <form id="loginForm">
+    <input type="text" id="username" placeholder="username" required>
+    <input type="password" id="password" placeholder="password" required>
+    <!-- SITE KEY -->
+    <!-- <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA"></div> -->
+    <div class="cf-turnstile" data-sitekey="0x4A**********m8954H"></div>
+    <button type="submit">Login</button>
+  </form>
+  <pre id="result"></pre>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const turnstileToken = document.querySelector('[name="cf-turnstile-response"]').value;
+
+      try {
+        // Localhost forwarded via cloudflare tunnel
+        const res = await fetch('https://*****_tunnel_*********.trycloudflare.com/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, turnstileToken })
+        });
+
+        const data = await res.json();
+        document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById('result').textContent = 'Error: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
